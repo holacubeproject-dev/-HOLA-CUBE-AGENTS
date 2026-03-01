@@ -477,11 +477,14 @@ You have the ability to remember context. Use it intelligently.`;
 const conversations = new Map();
 const MAX_HISTORY_LENGTH = 15;
 
+const puppeteer = require('puppeteer');
+
 // Initialize WhatsApp Client with LocalAuth to persist sessions
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         headless: true,
+        executablePath: puppeteer.executablePath(),
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
