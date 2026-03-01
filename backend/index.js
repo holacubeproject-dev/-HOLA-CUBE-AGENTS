@@ -450,6 +450,70 @@ app.post('/api/auth/google', async (req, res) => {
 
 // --- API ROUTES ---
 
+// Expose API Endpoint for the Web Simulator to chat with the Gemini AI
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { messages } = req.body;
+
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({ error: 'Invalid message format' });
+        }
+
+        const activeKey = process.env.GEMINI_API_KEY;
+        if (!activeKey) {
+            return res.status(500).json({ error: 'Gemini API key not configured on server' });
+        }
+
+        const ai = new GoogleGenAI({ apiKey: activeKey });
+
+        const systemInstruction = `You are the official Customer Support AI for HOLACUBEAGENTS. 
+Your goal is to converse with potential clients visiting our SaaS website, answer their questions, and persuade them to buy the $100/month CUBE subscription.
+
+Key Selling Points of CUBE:
+- It connects directly to their WhatsApp Business via a simple QR code (No Meta Official API fees).
+- It costs a flat $100/month (Cheaper than a human employee).
+- It handles 10,000+ chats simultaneously.
+- Response time under 0.8 seconds.
+- They can train it by dragging and dropping PDFs or DOCX files into the dashboard.
+
+Rules:
+- Be exceedingly professional, concise, and helpful. 
+- Use formatting (bolding, bullet points) sparingly for emphasis.
+- If they ask for pricing, tell them it's $100/mo and urge them to click "Pricing" in the menu.
+- Keep your answers short (1-3 sentences max) to simulate a fast live chat.
+- Frame CUBE as the absolute elite solution for AI automation.`;
+
+        const chatHistory = messages.map(msg => ({
+            role: msg.role === 'bot' ? 'model' : 'user',
+            parts: [{ text: msg.text }]
+        }));
+
+        const userPrompt = chatHistory.pop();
+
+        if (!userPrompt) {
+            return res.status(400).json({ error: 'No user message found' });
+        }
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [...chatHistory, userPrompt],
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.7,
+                maxOutputTokens: 250,
+            }
+        });
+
+        const replyText = response.text || "I apologize, but my core processors are currently updating. Please try again in a moment.";
+
+        res.status(200).json({ text: replyText });
+
+    } catch (error) {
+        console.error('Gemini API Error in /api/chat:', error);
+        res.status(500).json({ error: 'Internal Server Error computing AI response.' });
+    }
+});
+
 // Expose API Endpoint to fetch historical conversations
 app.get('/api/conversations', (req, res) => {
     const data = db.getAllConversations();
