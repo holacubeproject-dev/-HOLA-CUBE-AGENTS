@@ -1,0 +1,16 @@
+node_modules
+.env
+.env.local
+.next
+out
+.firebase
+conversations_db.json
+users_db.json
+
+backend/.wwebjs_auth/
+backend/.wwebjs_cache/
+
+backend/create_stripe_products.js
+backend/test_pdf.js
+backend/unlock_all.js
+backend/test_history.js
