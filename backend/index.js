@@ -34,9 +34,8 @@ const app = express();
 app.use(helmet());
 
 // 2. Strict CORS (Cross-Origin Resource Sharing)
-// In production, change this to your exact frontend domain: ['https://holacubeagents.com']
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://holacubeagents.web.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }));
