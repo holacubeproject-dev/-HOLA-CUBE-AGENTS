@@ -787,10 +787,14 @@ if (fs.existsSync(sessionPath)) {
     fs.rmSync(sessionPath, { recursive: true, force: true });
     console.log('🧹 Wiped previous WhatsApp session cache for fresh QR generation.');
 }
-
-client.initialize();
-
-const PORT = 3001;
+const PORT = process.env.PORT || 3001; // Railway defines PORT dynamically
 server.listen(PORT, () => {
+    console.log(`🌐 EXPRESS API Server gracefully started on port ${PORT}`);
+
+    // Defer the heavy WhatsApp Chrome browser launch so the API can breathe
+    setTimeout(() => {
+        console.log('🤖 Launching WhatsApp Web JS headless client...');
+        client.initialize().catch(err => console.error("Critical WhatsApp Init Error:", err));
+    }, 2000);
     console.log(`🔌 Express Socket.IO Server running on port ${PORT}`);
 });
