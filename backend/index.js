@@ -550,7 +550,7 @@ const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         headless: true,
-        executablePath: process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production' ? '/usr/bin/chromium' : puppeteer.executablePath(),
+        executablePath: puppeteer.executablePath(),
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
