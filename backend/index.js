@@ -792,8 +792,8 @@ if (fs.existsSync(sessionPath)) {
     }
 }
 const PORT = process.env.PORT || 3001; // Railway defines PORT dynamically
-server.listen(PORT, () => {
-    console.log(`🌐 EXPRESS API Server gracefully started on port ${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`🌐 EXPRESS API Server gracefully started on port ${PORT} (0.0.0.0)`);
 
     // Defer the heavy WhatsApp Chrome browser launch so the API can breathe
     setTimeout(() => {
