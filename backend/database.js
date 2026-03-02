@@ -5,15 +5,19 @@ const bcrypt = require('bcryptjs');
 const DB_PATH = path.join(__dirname, 'conversations_db.json');
 const USERS_DB_PATH = path.join(__dirname, 'users_db.json');
 
-// Initialize database files if they don't exist
+// Initialize database files if they don't exist, safely catching read-only errors
 function initDB() {
-    if (!fs.existsSync(DB_PATH)) {
-        fs.writeFileSync(DB_PATH, JSON.stringify({}), 'utf8');
-        console.log('📁 Local Conversations DB initialized.');
-    }
-    if (!fs.existsSync(USERS_DB_PATH)) {
-        fs.writeFileSync(USERS_DB_PATH, JSON.stringify([]), 'utf8');
-        console.log('👤 Local Users DB initialized.');
+    try {
+        if (!fs.existsSync(DB_PATH)) {
+            fs.writeFileSync(DB_PATH, JSON.stringify({}), 'utf8');
+            console.log('📁 Local Conversations DB initialized.');
+        }
+        if (!fs.existsSync(USERS_DB_PATH)) {
+            fs.writeFileSync(USERS_DB_PATH, JSON.stringify([]), 'utf8');
+            console.log('👤 Local Users DB initialized.');
+        }
+    } catch (err) {
+        console.error('🚨 COULD NOT INITIALIZE DB FILES (Likely read-only filesystem):', err.message);
     }
 }
 
