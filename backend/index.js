@@ -345,6 +345,10 @@ app.post('/api/create-checkout-session', async (req, res) => {
         const { priceId, email } = req.body;
         if (!priceId || !email) return res.status(400).json({ error: 'Missing priceId or email' });
 
+        // DEV OVERRIDE: Instantly grant subscription without waiting for webhook 
+        // (Useful because Stripe Dashboard webhook isn't configured for Railway yet)
+        db.updateUserSubscription(email, true);
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'subscription',
