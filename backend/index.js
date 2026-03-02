@@ -781,11 +781,15 @@ io.on('connection', (socket) => {
 console.log('🚀 Initializing Agent CUBE Backend v2 (Web Socket Enabled)...');
 db.initDB();
 
-// Force wipe the WhatsApp session for testing the generic QR flow
+// Attempt to wipe the WhatsApp session cache for fresh QR generation, but DO NOT crash if locked
 const sessionPath = path.join(__dirname, '.wwebjs_auth');
 if (fs.existsSync(sessionPath)) {
-    fs.rmSync(sessionPath, { recursive: true, force: true });
-    console.log('🧹 Wiped previous WhatsApp session cache for fresh QR generation.');
+    try {
+        fs.rmSync(sessionPath, { recursive: true, force: true });
+        console.log('🧹 Wiped previous WhatsApp session cache.');
+    } catch (fsErr) {
+        console.warn('⚠️ Could not wipe WhatsApp session cache (likely locked or read-only), continuing boot...', fsErr.message);
+    }
 }
 const PORT = process.env.PORT || 3001; // Railway defines PORT dynamically
 server.listen(PORT, () => {
