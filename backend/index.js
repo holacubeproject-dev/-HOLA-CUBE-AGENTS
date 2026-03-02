@@ -29,7 +29,7 @@ const GOOGLE_CLIENT_ID = '201826453926-kc0854dg7ougtns6hb5b9hhaa1sncaei.apps.goo
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const app = express();
-
+app.get('/ping', (req, res) => res.status(200).send('PONG - CUBE SERVER ALIVE'));
 // 1. Security Headers (Anti-XSS, Anti-Clickjacking)
 app.use(helmet());
 
@@ -550,7 +550,7 @@ const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         headless: true,
-        executablePath: puppeteer.executablePath(),
+        executablePath: process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production' ? '/usr/bin/chromium' : puppeteer.executablePath(),
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
