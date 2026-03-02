@@ -355,8 +355,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
                     quantity: 1,
                 },
             ],
-            success_url: 'http://localhost:3000/dashboard?payment_success=true',
-            cancel_url: 'http://localhost:3000/pricing',
+            success_url: 'https://holacubeagents.web.app/dashboard?payment_success=true',
+            cancel_url: 'https://holacubeagents.web.app/pricing',
         });
 
         res.json({ url: session.url });
