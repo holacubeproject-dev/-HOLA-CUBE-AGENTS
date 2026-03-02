@@ -796,9 +796,13 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`🌐 EXPRESS API Server gracefully started on port ${PORT} (0.0.0.0)`);
 
     // Defer the heavy WhatsApp Chrome browser launch so the API can breathe
-    setTimeout(() => {
-        console.log('🤖 Launching WhatsApp Web JS headless client...');
-        client.initialize().catch(err => console.error("Critical WhatsApp Init Error:", err));
+    setTimeout(async () => {
+        console.log('🤖 Launching WhatsApp Web JS headless client (DISABLED FOR MEMORY TEST)...');
+        try {
+            // await client.initialize();
+        } catch (botErr) {
+            console.error('🚨 WhatsApp Client Crash Caught (API remains up):', botErr.message);
+        }
     }, 2000);
     console.log(`🔌 Express Socket.IO Server running on port ${PORT}`);
 });
